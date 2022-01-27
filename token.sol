@@ -45,10 +45,11 @@ contract Ownable is Context {
 
 pragma solidity ^0.7.0;
 
-contract AquaTest3 is Ownable{
+contract TOKEN is Ownable{
    // specify `cap_supply`, declare `minter` and `supply`
     uint256 cap_supply = 500000000 ether ;
     uint256 supply = 100000000 ether;
+    string symbol = "TST";
         address private minter;
 
         // burn tokens by updating senders's balance and total supply
