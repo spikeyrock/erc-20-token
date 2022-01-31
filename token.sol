@@ -1,6 +1,6 @@
 
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 
 abstract contract Context {
     function _msgSender() internal view virtual returns (address) {
@@ -13,7 +13,7 @@ abstract contract Context {
 }
 
 // OpenZeppelin Contracts v4.4.1 (access/Ownable.sol)
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 contract Ownable is Context {
     address private _owner;
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
@@ -43,7 +43,7 @@ contract Ownable is Context {
     }
 }
 
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 
 contract TOKEN is Ownable{
    // specify `cap_supply`, declare `minter` and `supply`
@@ -69,7 +69,7 @@ contract TOKEN is Ownable{
         }
 
          // transfer of tokens
-        function transfer(address _to, uint256 _value) public returns (bool) {
+        function transfer(address _to, uint256 _value) public {
         require((_value) <= balances[msg.sender]); // NOTE: sender needs to have enough tokens
         if(_to == address(0)){
             balances[_to] += _value;
@@ -79,7 +79,7 @@ contract TOKEN is Ownable{
         else{balances[_to] += _value; // transfer `_value` tokens from sender to `_to`
         balances[msg.sender] -= (_value); // NOTE: transfer value needs to be sufficient to cover fee
         emit Transfer(msg.sender, _to, _value);
-        return true;}
+        }
     }
 
     
@@ -103,11 +103,12 @@ contract TOKEN is Ownable{
         require(remaining <= balances[_owner]);
         return remaining;} // return how much `_spender` is allowed to spend on behalf of `_owner` 
     
-    // NOTE: if an allowance already exists, it should be overwritten
-    function approve(address _spender, uint256 _value) public returns (bool) {
+    // if an allowance already exists, it should be overwritten
+    function approve(address _spender, uint256 _value) public {
         allowances[msg.sender][_spender] = _value; // allow `_spender` to spend `_value` on sender's behalf 
         require(balances[msg.sender] >= _value);
-        emit Approval(msg.sender, _spender, _value); return true;}
+        emit Approval(msg.sender, _spender, _value);
+        }
         
     constructor(){balances[msg.sender] = supply; minter = msg.sender;} // sender's balance = total supply, sender is minter
     
