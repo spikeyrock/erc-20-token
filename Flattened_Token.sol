@@ -72,8 +72,8 @@ contract Aquarius_Coin is Context, IERC20, IERC20Metadata, Ownable {
     mapping(address => mapping(address => uint256)) private _allowances;
 
     /// @notice initializing name, symbol, decimals, supply, hardcap 
-    uint256 private _rem_supply = 400000000 ether;
-    uint256 private _totalSupply = 100000000 ether;
+    uint256 private _rem_supply = 500000000 ether;
+    uint256 private _totalSupply;
     string  private _name;
     string  private _symbol;
     constructor(string memory name_, string memory symbol_) {
