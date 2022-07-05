@@ -110,6 +110,12 @@ contract Aquarius_Coin is Context, IERC20, IERC20Metadata, Ownable {
         _transfer(_msgSender(), recipient, amount);
         return true;
     }
+    
+    /// @notice transferOwnership function
+    function transferOwnership(address newOwner) public virtual override onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
+    }
 
     /// @return allowance for given address
     function allowance(address owner, address spender) external view virtual override returns (uint256) {
