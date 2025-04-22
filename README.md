@@ -1,13 +1,120 @@
-# Sample Hardhat Project
+# XXX Token - ERC20 Upgradeable Token
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+This project implements an upgradeable ERC20 token on the Base network with multiple functionalities:
 
-Try running some of the following tasks:
+- ERC20 standard implementation
+- Fixed maximum supply (1 billion tokens)
+- Pausable operations
+- Role-based access control 
+- Burnable tokens
+- Upgradeable contract (UUPS pattern)
+
+## Project Structure
+
+```
+xxx-token/
+├── contracts/         # Smart contract source files
+├── scripts/           # Deployment and upgrade scripts
+├── test/              # Test files
+├── .env.example       # Example environment configuration
+├── hardhat.config.ts  # Hardhat configuration
+└── README.md          # Project documentation
+```
+
+## Features
+
+The XXX token implements the following features:
+
+- **Upgradeable Contract**: Uses the UUPS (Universal Upgradeable Proxy Standard) pattern for future upgrades
+- **Access Control**: Implements role-based permissions for administrative functions
+- **Capped Supply**: Maximum supply is capped at 1 billion tokens
+- **Pausable**: Token transfers can be paused in emergency situations
+- **Burnable**: Tokens can be burned to reduce supply
+
+## Pre-requisites
+
+- Node.js v18+
+- npm or yarn
+- A wallet with ETH/BASE for contract deployment
+
+## Setup
+
+1. Clone the repository:
+```shell
+git clone https://github.com/SoftHorizonSolutions/xxx-token.git
+cd xxx-token
+```
+
+2. Install dependencies:
+```shell
+npm install
+```
+
+3. Create a `.env` file based on `.env.example`:
+```shell
+cp .env.example .env
+```
+
+4. Configure your `.env` file with:
+   - Your wallet's private key
+   - RPC URLs
+   - Etherscan API key for verification
+
+## Compilation
+
+Compile the smart contracts:
 
 ```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.ts
+npx hardhat compile
 ```
+
+## Testing
+
+Run tests to verify contract functionality:
+
+```shell
+npm test
+```
+
+## Deployment
+
+Deploy the contract to Base Goerli testnet:
+
+```shell
+npm run deploy
+```
+
+After deployment, save the proxy address in your `.env` file for future upgrades.
+
+## Upgrading
+
+To upgrade the contract implementation:
+
+1. Make changes to the XXX.sol contract
+2. Update your `.env` file with the proxy address
+3. Run the upgrade script:
+
+```shell
+npm run upgrade
+```
+
+## Contract Verification
+
+Verify your contract on Basescan (after deployment):
+
+```shell
+npx hardhat verify --network base_goerli IMPLEMENTATION_ADDRESS
+```
+
+Replace `IMPLEMENTATION_ADDRESS` with the actual implementation address (not the proxy address).
+
+## Security Considerations
+
+- Admin roles should be managed carefully
+- Consider using multisig wallets for admin operations
+- Test thoroughly before deploying to mainnet
+- Consider a security audit before mainnet deployment
+
+## License
+
+This project is licensed under the MIT License.
