@@ -1,0 +1,32 @@
+{
+  "name": "xxx-token",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+  "deploy": "npx hardhat run scripts/deploy.js --network base_goerli",
+  "upgrade": "npx hardhat run scripts/upgrade.js --network base_goerli",
+  "test": "npx hardhat test"
+}
+,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoftHorizonSolutions/xxx-token.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SoftHorizonSolutions/xxx-token/issues"
+  },
+  "homepage": "https://github.com/SoftHorizonSolutions/xxx-token#readme",
+  "description": "",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.23.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts-upgradeable": "^5.3.0",
+    "@openzeppelin/hardhat-upgrades": "^3.9.0",
+    "dotenv": "^16.5.0"
+  }
+}
