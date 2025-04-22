@@ -15,7 +15,6 @@ This project implements an upgradeable ERC20 token on the Base network with mult
 xxx-token/
 ├── contracts/         # Smart contract source files
 ├── scripts/           # Deployment and upgrade scripts
-├── test/              # Test files
 ├── .env.example       # Example environment configuration
 ├── hardhat.config.ts  # Hardhat configuration
 └── README.md          # Project documentation
