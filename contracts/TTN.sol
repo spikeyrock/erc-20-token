@@ -2,7 +2,8 @@
 pragma solidity ^0.8.24;
 
 /**
- * @title XXX Token
+ * @title TTN Token
+ * @author https://github.com/spikeyrock
  * @dev Implementation of an upgradeable ERC20 token with additional features:
  * - Pausable functionality for emergency stops
  * - Burnable capabilities to reduce supply
@@ -20,7 +21,7 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol"
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-contract XXX is Initializable,
+contract TTN is Initializable,
     ERC20Upgradeable,
     ERC20BurnableUpgradeable,
     ERC20PausableUpgradeable,
@@ -48,7 +49,7 @@ contract XXX is Initializable,
      */
     function initialize() public initializer {
         // Initialize ERC20 with name and symbol
-        __ERC20_init("XXX", "XXX");
+        __ERC20_init("TTN", "TTN");
         
         // Initialize extensions
         __ERC20Burnable_init();

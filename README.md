@@ -1,4 +1,4 @@
-# XXX Token - ERC20 Upgradeable Token
+# TTN Token - ERC20 Upgradeable Token
 
 This project implements an upgradeable ERC20 token on the Base network with multiple functionalities:
 
@@ -12,7 +12,7 @@ This project implements an upgradeable ERC20 token on the Base network with mult
 ## Project Structure
 
 ```
-xxx-token/
+ttn-token/
 ├── contracts/         # Smart contract source files
 ├── scripts/           # Deployment and upgrade scripts
 ├── .env.example       # Example environment configuration
@@ -22,7 +22,7 @@ xxx-token/
 
 ## Features
 
-The XXX token implements the following features:
+The TTN token implements the following features:
 
 - **Upgradeable Contract**: Uses the UUPS (Universal Upgradeable Proxy Standard) pattern for future upgrades
 - **Access Control**: Implements role-based permissions for administrative functions
@@ -41,7 +41,7 @@ The XXX token implements the following features:
 1. Clone the repository:
 ```shell
 git clone https://github.com/spikeyrock/erc-20-token.git
-cd xxx-token
+cd ttn-token
 ```
 
 2. Install dependencies:
@@ -89,7 +89,7 @@ After deployment, save the proxy address in your `.env` file for future upgrades
 
 To upgrade the contract implementation:
 
-1. Make changes to the XXX.sol contract
+1. Make changes to the TTN.sol contract
 2. Update your `.env` file with the proxy address
 3. Run the upgrade script:
 

@@ -1,7 +1,7 @@
 /**
- * Deployment script for XXX Token
+ * Deployment script for TTN Token
  * 
- * This script deploys the XXX token using the UUPS upgradeable pattern.
+ * This script deploys the TTN token using the UUPS upgradeable pattern.
  * After deployment, the proxy address should be stored in the .env file
  * for future upgrades.
  */
@@ -10,14 +10,14 @@ import { ethers, upgrades } from "hardhat";
 import "dotenv/config";
 
 async function main(): Promise<void> {
-  console.log("Starting deployment process for XXX Token...");
+  console.log("Starting deployment process for TTN Token...");
 
   // Get the contract factory
-  const XXX = await ethers.getContractFactory("XXX");
-  console.log("Deploying XXX token and proxy...");
+  const TTN = await ethers.getContractFactory("TTN");
+  console.log("Deploying TTN token and proxy...");
 
   // Deploy the proxy with the implementation and initialize it
-  const proxy = await upgrades.deployProxy(XXX, [], {
+  const proxy = await upgrades.deployProxy(TTN, [], {
     initializer: "initialize",
     kind: "uups", // Using UUPS proxy pattern
   });
@@ -29,7 +29,7 @@ async function main(): Promise<void> {
   const proxyAddress = await proxy.getAddress();
   
   // Log deployment info
-  console.log("XXX Proxy deployed to:", proxyAddress);
+  console.log("TTN Proxy deployed to:", proxyAddress);
   console.log("Owner:", await proxy.owner());
   console.log("Total Supply:", (await proxy.totalSupply()).toString());
   

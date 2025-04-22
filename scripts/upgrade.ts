@@ -1,7 +1,7 @@
 /**
- * Upgrade script for XXX Token
+ * Upgrade script for TTN Token
  * 
- * This script upgrades the implementation of an existing XXX token proxy.
+ * This script upgrades the implementation of an existing TTN token proxy.
  * The PROXY_ADDRESS environment variable must be set in the .env file.
  */
 
@@ -17,14 +17,14 @@ async function main(): Promise<void> {
     throw new Error("Missing PROXY_ADDRESS in .env file. Please set it to your deployed proxy address.");
   }
   
-  console.log(`Starting upgrade process for XXX Token at ${proxyAddress}...`);
+  console.log(`Starting upgrade process for TTN Token at ${proxyAddress}...`);
 
   // Get the contract factory for the new implementation
-  const XXX = await ethers.getContractFactory("XXX");
+  const TTN = await ethers.getContractFactory("TTN");
   console.log("Preparing new implementation...");
 
   // Deploy the new implementation and upgrade the proxy
-  const upgraded = await upgrades.upgradeProxy(proxyAddress, XXX);
+  const upgraded = await upgrades.upgradeProxy(proxyAddress, TTN);
   
   // Wait for deployment to complete
   await upgraded.waitForDeployment();
