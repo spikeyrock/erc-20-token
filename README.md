@@ -40,7 +40,7 @@ The XXX token implements the following features:
 
 1. Clone the repository:
 ```shell
-git clone https://github.com/SoftHorizonSolutions/xxx-token.git
+git clone https://github.com/spikeyrock/erc-20-token.git
 cd xxx-token
 ```
 
