@@ -3,8 +3,8 @@
 This project implements a comprehensive token system for the XXX ecosystem on the Base network with a 3-contract architecture:
 
 1. **XXXToken** - Core ERC20 Token contract
-2. **TokenVault** - Token Treasury & Allocation Manager
-3. **VestingManager** - Vesting, Locking, and Claiming
+2. **XXXTokenVault** - Token Treasury & Allocation Manager
+3. **XXXVestingManager** - Vesting, Locking, and Claiming
 
 ## Project Structure
 
@@ -12,8 +12,8 @@ This project implements a comprehensive token system for the XXX ecosystem on th
 ttn-token/
 ├── contracts/         # Smart contract source files
 │   ├── XXXToken.sol        # Core ERC20 Token
-│   ├── TokenVault.sol      # Treasury & Allocation Manager
-│   └── VestingManager.sol  # Vesting & Locking Manager
+│   ├── XXXTokenVault.sol      # Treasury & Allocation Manager
+│   └── XXXVestingManager.sol  # Vesting & Locking Manager
 ├── scripts/           # Deployment and upgrade scripts
 ├── deployments/       # Deployment artifacts
 ├── .env.example       # Example environment configuration
@@ -27,8 +27,8 @@ The XXX token system implements the following features:
 
 - **3-Contract Architecture**:
   - **XXXToken**: Core ERC20 with minting, burning, pausing, and upgradeability
-  - **TokenVault**: Manages token allocations, airdrops, and minting control
-  - **VestingManager**: Handles vesting schedules, locking, unlocking, and claims
+  - **XXXTokenVault**: Manages token allocations, airdrops, and minting control
+  - **XXXVestingManager**: Handles vesting schedules, locking, unlocking, and claims
 
 - **Upgradeable Architecture**: All contracts use the UUPS (Universal Upgradeable Proxy Standard) pattern for future upgrades
 
