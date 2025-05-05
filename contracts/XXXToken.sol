@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-
 /**
- * @title TTN Token
+ * @title XXXToken
  * @author https://github.com/spikeyrock
  * @dev Implementation of an upgradeable ERC20 token with additional features:
  * - Pausable functionality for emergency stops
@@ -21,7 +20,7 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol"
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-contract TTN is Initializable,
+contract XXXToken is Initializable,
     ERC20Upgradeable,
     ERC20BurnableUpgradeable,
     ERC20PausableUpgradeable,
@@ -33,6 +32,10 @@ contract TTN is Initializable,
     // Role identifiers
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
+
+    // Max supply of 1 billion tokens
+    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10**18;
 
     /**
      * @dev Prevents the implementation contract from being initialized
@@ -45,18 +48,18 @@ contract TTN is Initializable,
 
     /**
      * @dev Initializes the contract replacing the constructor for upgradeable contracts
-     * Sets up roles, mints initial supply, and configures token parameters
+     * Sets up roles and configures token parameters
      */
     function initialize() public initializer {
         // Initialize ERC20 with name and symbol
-        __ERC20_init("TTN", "TTN");
+        __ERC20_init("XXX", "XXX");
         
         // Initialize extensions
         __ERC20Burnable_init();
         __ERC20Pausable_init();
         
         // Set max supply cap to 1 billion tokens
-        __ERC20Capped_init(1_000_000_000 * 10 ** decimals());
+        __ERC20Capped_init(MAX_SUPPLY);
         
         // Set up ownership and access control
         __Ownable_init(msg.sender);
@@ -67,10 +70,10 @@ contract TTN is Initializable,
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
-
-        // Mint entire supply to deployer
-        // Note: This means all tokens exist from the start
-        _mint(msg.sender, 1_000_000_000 * 10 ** decimals());
+        _grantRole(UPGRADER_ROLE, msg.sender);
+        
+        // Note: We no longer mint the entire supply at initialization
+        // Instead, tokens will be minted on-demand through the TokenVault
     }
 
     /**
@@ -106,7 +109,7 @@ contract TTN is Initializable,
      * 
      * @param newImplementation Address of the new implementation contract
      */
-    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
 
     /**
      * @dev Hook that is called before any transfer of tokens

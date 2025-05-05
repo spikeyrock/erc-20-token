@@ -1,34 +1,50 @@
-# TTN Token - ERC20 Upgradeable Token
+# XXX Token System
 
-This project implements an upgradeable ERC20 token on the Base network with multiple functionalities:
+This project implements a comprehensive token system for the XXX ecosystem on the Base network with a 3-contract architecture:
 
-- ERC20 standard implementation
-- Fixed maximum supply (1 billion tokens)
-- Pausable operations
-- Role-based access control 
-- Burnable tokens
-- Upgradeable contract (UUPS pattern)
+1. **XXXToken** - Core ERC20 Token contract
+2. **TokenVault** - Token Treasury & Allocation Manager
+3. **VestingManager** - Vesting, Locking, and Claiming
 
 ## Project Structure
 
 ```
 ttn-token/
 ├── contracts/         # Smart contract source files
+│   ├── XXXToken.sol        # Core ERC20 Token
+│   ├── TokenVault.sol      # Treasury & Allocation Manager
+│   └── VestingManager.sol  # Vesting & Locking Manager
 ├── scripts/           # Deployment and upgrade scripts
+├── deployments/       # Deployment artifacts
 ├── .env.example       # Example environment configuration
 ├── hardhat.config.ts  # Hardhat configuration
 └── README.md          # Project documentation
 ```
 
-## Features
+## Key Features
 
-The TTN token implements the following features:
+The XXX token system implements the following features:
 
-- **Upgradeable Contract**: Uses the UUPS (Universal Upgradeable Proxy Standard) pattern for future upgrades
-- **Access Control**: Implements role-based permissions for administrative functions
-- **Capped Supply**: Maximum supply is capped at 1 billion tokens
-- **Pausable**: Token transfers can be paused in emergency situations
-- **Burnable**: Tokens can be burned to reduce supply
+- **3-Contract Architecture**:
+  - **XXXToken**: Core ERC20 with minting, burning, pausing, and upgradeability
+  - **TokenVault**: Manages token allocations, airdrops, and minting control
+  - **VestingManager**: Handles vesting schedules, locking, unlocking, and claims
+
+- **Upgradeable Architecture**: All contracts use the UUPS (Universal Upgradeable Proxy Standard) pattern for future upgrades
+
+- **On-Demand Minting with Hard Cap**: Maximum supply is capped at 1 billion tokens, minted only as needed for allocations
+
+- **Flexible Vesting and Locking**: Custom unlock patterns including cliff periods, linear releases, and milestone-based unlocks
+
+- **Airdrop Functionality**: Batch-allocate tokens to multiple addresses for airdrops
+
+- **Manual Unlocking**: Perform early unlocks when needed (e.g., exchange listings)
+
+- **Allocation Revocation**: Revoke part or all of locked allocations when needed
+
+- **On-Chain Visibility**: Transparent vesting schedules with query functions for beneficiaries
+
+- **Emergency Controls**: Pause transfers, vault operations, and vesting claims in case of security issues
 
 ## Pre-requisites
 
@@ -40,7 +56,7 @@ The TTN token implements the following features:
 
 1. Clone the repository:
 ```shell
-git clone https://github.com/spikeyrock/erc-20-token.git
+git clone https://github.com/spikeyrock/ttn-token.git
 cd ttn-token
 ```
 
@@ -77,35 +93,54 @@ npm test
 
 ## Deployment
 
-Deploy the contract to Base Goerli testnet:
+Deploy the complete token system to Base Goerli testnet:
 
 ```shell
 npm run deploy
 ```
 
-After deployment, save the proxy address in your `.env` file for future upgrades.
+After deployment:
+1. Save the proxy addresses in your `.env` file for future upgrades
+2. Verify the implementation contracts on Basescan
 
 ## Upgrading
 
-To upgrade the contract implementation:
+To upgrade contract implementations:
 
-1. Make changes to the TTN.sol contract
-2. Update your `.env` file with the proxy address
-3. Run the upgrade script:
+1. Make changes to the contract(s) you want to upgrade
+2. Update your `.env` file with the proxy addresses
+3. Run the upgrade script, specifying which contract to upgrade:
 
 ```shell
-npm run upgrade
+# Upgrade a specific contract (token, vault, or vesting)
+npm run upgrade -- token
+npm run upgrade -- vault
+npm run upgrade -- vesting
+
+# Or upgrade all contracts
+npm run upgrade -- all
 ```
 
 ## Contract Verification
 
-Verify your contract on Basescan (after deployment):
+Verify your contracts on Basescan (after deployment):
 
 ```shell
+# Get all implementation addresses and verification commands
+npx hardhat run scripts/verify.ts --network base_goerli
+
+# Then run the verification command for each implementation
 npx hardhat verify --network base_goerli IMPLEMENTATION_ADDRESS
 ```
 
-Replace `IMPLEMENTATION_ADDRESS` with the actual implementation address (not the proxy address).
+## Token Lifecycle
+
+1. **Initial Deployment**: Contracts deployed without pre-minting the supply
+2. **Allocation and Vesting**: Tokens minted on-demand through the vault
+3. **Locking**: Allocated tokens locked under specific vesting schedules
+4. **Unlocking and Claiming**: Tokens unlock over time and can be claimed by beneficiaries
+5. **Revocations (if needed)**: Admins can revoke unvested portions if required
+6. **Visibility and Tracking**: Beneficiaries can query their schedules and balances
 
 ## Security Considerations
 

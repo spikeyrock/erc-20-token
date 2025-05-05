@@ -1,5 +1,5 @@
 {
-  "name": "ttn-token",
+  "name": "xxx-token",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,15 +10,15 @@
 ,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SoftHorizonSolutions/ttn-token.git"
+    "url": "git+https://github.com/spikeyrock/erc-20-token.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/SoftHorizonSolutions/ttn-token/issues"
+    "url": "https://github.com/spikeyrock/erc-20-token/issues"
   },
-  "homepage": "https://github.com/SoftHorizonSolutions/ttn-token#readme",
+  "homepage": "https://github.com/spikeyrock/erc-20-token#readme",
   "description": "",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
