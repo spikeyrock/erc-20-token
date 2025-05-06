@@ -154,19 +154,4 @@ describe("XXXToken", function () {
     });
   });
 
-//   describe("Upgrading", function () {
-//     it("Should allow upgrader to upgrade the contract", async function () {
-//       const XXXTokenV2 = await ethers.getContractFactory("XXXTokenV2");
-//       await expect(
-//         token.connect(upgrader).upgradeTo(await XXXTokenV2.getAddress())
-//       ).to.not.be.reverted;
-//     });
-
-//     it("Should not allow non-upgrader to upgrade the contract", async function () {
-//       const XXXTokenV2 = await ethers.getContractFactory("XXXTokenV2");
-//       await expect(
-//         token.connect(user1).upgradeTo(await XXXTokenV2.getAddress())
-//       ).to.be.revertedWithCustomError(token, "AccessControlUnauthorizedAccount");
-//     });
-//   });
 }); 
