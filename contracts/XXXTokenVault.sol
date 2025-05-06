@@ -39,6 +39,16 @@ contract TokenVault is Initializable,
     event AirdropExecuted(address[] beneficiaries, uint256[] amounts, uint256 airdropId);
     event VestingManagerSet(address indexed vestingManager);
 
+    // Custom errors
+    error ZeroAddress(string param);
+    error InvalidAmount();
+    error InvalidAllocationId();
+    error AllocationAlreadyRevoked();
+    error EmptyBeneficiariesList();
+    error ArraysLengthMismatch();
+    error InvalidBeneficiary();
+    error InvalidAmountInBatch();
+
     // Allocation counter
     uint256 private _allocationCounter;
     uint256 private _airdropCounter;
@@ -70,13 +80,13 @@ contract TokenVault is Initializable,
      * @param _ttnToken Address of the XXXToken contract
      */
     function initialize(address _ttnToken) public initializer {
-        require(_ttnToken != address(0), "TokenVault: token address cannot be zero");
-        
+         if (_ttnToken == address(0)) revert ZeroAddress("token");
         __AccessControl_init();
         __UUPSUpgradeable_init();
         __Pausable_init();
         __ReentrancyGuard_init();
         
+       
         ttnToken = XXXToken(_ttnToken);
         
         // Grant admin roles to deployer
@@ -94,7 +104,7 @@ contract TokenVault is Initializable,
      * @param _vestingManager Address of the VestingManager contract
      */
     function setVestingManager(address _vestingManager) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(_vestingManager != address(0), "TokenVault: vesting manager address cannot be zero");
+        if (_vestingManager == address(0)) revert ZeroAddress("vesting manager");
         vestingManager = _vestingManager;
         emit VestingManagerSet(_vestingManager);
     }
@@ -112,8 +122,8 @@ contract TokenVault is Initializable,
         nonReentrant 
         returns (uint256) 
     {
-        require(beneficiary != address(0), "TokenVault: beneficiary cannot be zero address");
-        require(amount > 0, "TokenVault: amount must be greater than zero");
+        if (beneficiary == address(0)) revert InvalidBeneficiary();
+        if (amount == 0) revert InvalidAmount();
         
         // Increment allocation counter
         _allocationCounter++;
@@ -151,10 +161,10 @@ contract TokenVault is Initializable,
         nonReentrant 
         returns (bool) 
     {
-        require(allocationId > 0 && allocationId <= _allocationCounter, "TokenVault: invalid allocation ID");
+        if (allocationId == 0 || allocationId > _allocationCounter) revert InvalidAllocationId();
         
         Allocation storage allocation = allocations[allocationId];
-        require(!allocation.revoked, "TokenVault: allocation already revoked");
+        if (allocation.revoked) revert AllocationAlreadyRevoked();
         
         // Mark allocation as revoked
         allocation.revoked = true;
@@ -177,16 +187,16 @@ contract TokenVault is Initializable,
         nonReentrant 
         returns (uint256) 
     {
-        require(beneficiaries.length > 0, "TokenVault: empty beneficiaries list");
-        require(beneficiaries.length == amounts.length, "TokenVault: arrays length mismatch");
+        if (beneficiaries.length == 0) revert EmptyBeneficiariesList();
+        if (beneficiaries.length != amounts.length) revert ArraysLengthMismatch();
         
         // Increment airdrop counter
         _airdropCounter++;
         
         // Process each beneficiary
         for (uint256 i = 0; i < beneficiaries.length; i++) {
-            require(beneficiaries[i] != address(0), "TokenVault: beneficiary cannot be zero address");
-            require(amounts[i] > 0, "TokenVault: amount must be greater than zero");
+            if (beneficiaries[i] == address(0)) revert InvalidBeneficiary();
+            if (amounts[i] == 0) revert InvalidAmountInBatch();
             
             // Create an allocation for each beneficiary
             _allocationCounter++;

@@ -84,6 +84,20 @@ contract VestingManager is Initializable,
         address indexed unlockInitiator
     );
 
+    // Custom errors
+    error ZeroAddress(string param);
+    error InvalidAmount();
+    error InvalidDuration();
+    error InvalidCliffDuration();
+    error InvalidStartTime();
+    error InvalidScheduleId();
+    error NotBeneficiary();
+    error NoTokensDue();
+    error TransferFailed();
+    error ScheduleRevokeed();
+    error AmountExceedsRemaining();
+    error NoTokensToRevoke();
+
     /**
      * @dev Prevents the implementation contract from being initialized
      * This is a security measure to avoid potential attacks
@@ -99,13 +113,13 @@ contract VestingManager is Initializable,
      * @param _tokenVault Address of the TokenVault contract
      */
     function initialize(address _ttnToken, address _tokenVault) public initializer {
-        require(_ttnToken != address(0), "VestingManager: token address cannot be zero");
-        require(_tokenVault != address(0), "VestingManager: vault address cannot be zero");
-        
+       if (_ttnToken == address(0)) revert ZeroAddress("token");
+       if (_tokenVault == address(0)) revert ZeroAddress("vault");
         __AccessControl_init();
         __UUPSUpgradeable_init();
         __Pausable_init();
         __ReentrancyGuard_init();
+        
         
         ttnToken = XXXToken(_ttnToken);
         tokenVault = TokenVault(_tokenVault);
@@ -143,11 +157,11 @@ contract VestingManager is Initializable,
         nonReentrant
         returns (uint256) 
     {
-        require(beneficiary != address(0), "VestingManager: beneficiary cannot be zero address");
-        require(totalAmount > 0, "VestingManager: amount must be greater than zero");
-        require(duration > 0, "VestingManager: duration must be greater than zero");
-        require(duration >= cliffDuration, "VestingManager: duration must be >= cliff");
-        require(startTime >= block.timestamp, "VestingManager: start time must be in the future");
+        if (beneficiary == address(0)) revert ZeroAddress("beneficiary");
+        if (totalAmount == 0) revert InvalidAmount();
+        if (duration == 0) revert InvalidDuration();
+        if (duration < cliffDuration) revert InvalidCliffDuration();
+        if (startTime < block.timestamp) revert InvalidStartTime();
         
         // Increment vesting schedule counter
         _vestingScheduleCounter++;
@@ -187,7 +201,7 @@ contract VestingManager is Initializable,
      * @return The amount of tokens that can be released
      */
     function computeReleasableAmount(uint256 scheduleId) public view returns (uint256) {
-        require(scheduleId > 0 && scheduleId <= _vestingScheduleCounter, "VestingManager: invalid schedule ID");
+        if (scheduleId == 0 || scheduleId > _vestingScheduleCounter) revert InvalidScheduleId();
         
         VestingSchedule storage schedule = vestingSchedules[scheduleId];
         
@@ -224,19 +238,19 @@ contract VestingManager is Initializable,
         nonReentrant
         returns (uint256) 
     {
-        require(scheduleId > 0 && scheduleId <= _vestingScheduleCounter, "VestingManager: invalid schedule ID");
+        if (scheduleId == 0 || scheduleId > _vestingScheduleCounter) revert InvalidScheduleId();
         
         VestingSchedule storage schedule = vestingSchedules[scheduleId];
-        require(msg.sender == schedule.beneficiary, "VestingManager: caller is not the beneficiary");
+        if (msg.sender != schedule.beneficiary) revert NotBeneficiary();
         
         uint256 releasableAmount = computeReleasableAmount(scheduleId);
-        require(releasableAmount > 0, "VestingManager: no tokens are due for release");
+        if (releasableAmount == 0) revert NoTokensDue();
         
         // Update released amount
         schedule.releasedAmount += releasableAmount;
         
         // Transfer tokens to beneficiary
-        require(ttnToken.transfer(schedule.beneficiary, releasableAmount), "VestingManager: transfer failed");
+        if (!ttnToken.transfer(schedule.beneficiary, releasableAmount)) revert TransferFailed();
         
         emit TokensReleased(scheduleId, schedule.beneficiary, releasableAmount);
         
@@ -255,20 +269,20 @@ contract VestingManager is Initializable,
         nonReentrant
         returns (bool) 
     {
-        require(scheduleId > 0 && scheduleId <= _vestingScheduleCounter, "VestingManager: invalid schedule ID");
-        require(amount > 0, "VestingManager: amount must be greater than zero");
+        if (scheduleId == 0 || scheduleId > _vestingScheduleCounter) revert InvalidScheduleId();
+        if (amount == 0) revert InvalidAmount();
         
         VestingSchedule storage schedule = vestingSchedules[scheduleId];
-        require(!schedule.revoked, "VestingManager: schedule is revoked");
+        if (schedule.revoked) revert ScheduleRevokeed();
         
         uint256 remainingAmount = schedule.totalAmount - schedule.releasedAmount;
-        require(amount <= remainingAmount, "VestingManager: amount exceeds remaining tokens");
+        if (amount > remainingAmount) revert AmountExceedsRemaining();
         
         // Update released amount
         schedule.releasedAmount += amount;
         
         // Transfer tokens to beneficiary
-        require(ttnToken.transfer(schedule.beneficiary, amount), "VestingManager: transfer failed");
+        if (!ttnToken.transfer(schedule.beneficiary, amount)) revert TransferFailed();
         
         emit ManualUnlock(scheduleId, schedule.beneficiary, amount, msg.sender);
         
@@ -286,17 +300,17 @@ contract VestingManager is Initializable,
         nonReentrant
         returns (uint256) 
     {
-        require(scheduleId > 0 && scheduleId <= _vestingScheduleCounter, "VestingManager: invalid schedule ID");
+        if (scheduleId == 0 || scheduleId > _vestingScheduleCounter) revert InvalidScheduleId();
         
         VestingSchedule storage schedule = vestingSchedules[scheduleId];
-        require(!schedule.revoked, "VestingManager: schedule already revoked");
+        if (schedule.revoked) revert ScheduleRevokeed();
         
         // Calculate remaining tokens
         uint256 releasableAmount = computeReleasableAmount(scheduleId);
         uint256 remainingAmount = schedule.totalAmount - schedule.releasedAmount - releasableAmount;
         
         // Ensure there are tokens to revoke
-        require(remainingAmount > 0, "VestingManager: no tokens to revoke");
+        if (remainingAmount == 0) revert NoTokensToRevoke();
         
         // Mark schedule as revoked
         schedule.revoked = true;
@@ -305,6 +319,9 @@ contract VestingManager is Initializable,
         if (schedule.allocationId > 0) {
             tokenVault.revokeAllocation(schedule.allocationId);
         }
+        
+        // Transfer remaining tokens to beneficiary
+        if (!ttnToken.transfer(schedule.beneficiary, remainingAmount)) revert TransferFailed();
         
         emit ScheduleRevoked(scheduleId, schedule.beneficiary, remainingAmount);
         
@@ -334,7 +351,7 @@ contract VestingManager is Initializable,
         view 
         returns (VestingSchedule memory) 
     {
-        require(scheduleId > 0 && scheduleId <= _vestingScheduleCounter, "VestingManager: invalid schedule ID");
+        if (scheduleId == 0 || scheduleId > _vestingScheduleCounter) revert InvalidScheduleId();
         return vestingSchedules[scheduleId];
     }
 
@@ -358,7 +375,7 @@ contract VestingManager is Initializable,
             uint256 nextUnlockTime
         ) 
     {
-        require(scheduleId > 0 && scheduleId <= _vestingScheduleCounter, "VestingManager: invalid schedule ID");
+        if (scheduleId == 0 || scheduleId > _vestingScheduleCounter) revert InvalidScheduleId();
         
         VestingSchedule storage schedule = vestingSchedules[scheduleId];
         releasableAmount = computeReleasableAmount(scheduleId);
