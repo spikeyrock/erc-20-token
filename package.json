@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-  "deploy": "npx hardhat run scripts/deploy.js --network base_goerli",
-  "upgrade": "npx hardhat run scripts/upgrade.js --network base_goerli",
-  "test": "npx hardhat test"
-}
-,
+    "deploy": "npx hardhat run scripts/deploy.js --network base_goerli",
+    "upgrade": "npx hardhat run scripts/upgrade.js --network base_goerli",
+    "test": "npx hardhat test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/spikeyrock/erc-20-token.git"
@@ -22,7 +21,8 @@
   "description": "",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "hardhat": "^2.23.0"
+    "hardhat": "^2.23.0",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@openzeppelin/contracts-upgradeable": "^5.3.0",

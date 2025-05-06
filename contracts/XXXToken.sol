@@ -29,6 +29,9 @@ contract XXXToken is Initializable,
     AccessControlUpgradeable,
     UUPSUpgradeable {
 
+    // Custom errors
+    error MaxSupplyExceeded(uint256 requested, uint256 available);
+
     // Role identifiers
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -100,6 +103,9 @@ contract XXXToken is Initializable,
      * @param amount The amount of tokens to mint
      */
     function mint(address to, uint256 amount) external onlyRole(MINTER_ROLE) {
+        if (totalSupply() + amount > MAX_SUPPLY) {
+            revert MaxSupplyExceeded(amount, MAX_SUPPLY - totalSupply());
+        }
         _mint(to, amount);
     }
 
