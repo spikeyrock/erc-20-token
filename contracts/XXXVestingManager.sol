@@ -37,15 +37,15 @@ contract VestingManager is Initializable,
 
     // Vesting schedule structure
     struct VestingSchedule {
-        address beneficiary;
         uint256 totalAmount;
         uint256 startTime;
         uint256 cliffDuration;
         uint256 duration;
         uint256 releasedAmount;
-        bool revoked;
         uint256 createdAt;
         uint256 allocationId;
+        address beneficiary;
+        bool revoked;
     }
 
     // Vesting schedule counter

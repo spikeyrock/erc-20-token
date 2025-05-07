@@ -55,8 +55,8 @@ contract TokenVault is Initializable,
 
     // Allocation tracking
     struct Allocation {
-        address beneficiary;
         uint256 amount;
+        address beneficiary;
         bool revoked;
     }
     
