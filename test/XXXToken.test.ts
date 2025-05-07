@@ -1,6 +1,11 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+import { expect } from "chai";
+import { ethers, upgrades } from "hardhat";
+import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
+import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
+import { Contract } from "ethers";
+
+// Import the contract type
+import { XXXToken, XXXTokenV2 } from "../typechain-types";
 
 describe("XXXToken", function () {
   // Test roles
@@ -10,15 +15,15 @@ describe("XXXToken", function () {
   const UPGRADER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("UPGRADER_ROLE"));
 
   // Test accounts
-  let owner;
-  let minter;
-  let pauser;
-  let upgrader;
-  let user1;
-  let user2;
+  let owner: SignerWithAddress;
+  let minter: SignerWithAddress;
+  let pauser: SignerWithAddress;
+  let upgrader: SignerWithAddress;
+  let user1: SignerWithAddress;
+  let user2: SignerWithAddress;
 
   // Contract instance
-  let token;
+  let token: XXXToken;
 
   async function deployTokenFixture() {
     [owner, minter, pauser, upgrader, user1, user2] = await ethers.getSigners();
@@ -76,36 +81,34 @@ describe("XXXToken", function () {
     });
 
     it("Should allow minting up to max supply", async function () {
-        const maxSupply = await token.MAX_SUPPLY();
-        await token.connect(minter).mint(user1.address, maxSupply);
-        expect(await token.totalSupply()).to.equal(maxSupply);
-      });
+      const maxSupply = await token.MAX_SUPPLY();
+      await token.connect(minter).mint(user1.address, maxSupply);
+      expect(await token.totalSupply()).to.equal(maxSupply);
+    });
 
-      it("Should not allow minting beyond max supply", async function () {
-        const maxSupply = await token.MAX_SUPPLY();
-        await token.connect(minter).mint(user1.address, maxSupply);
-        
-        // Try to mint 1 more token
-        await expect(
-          token.connect(minter).mint(user1.address, 1)
-        ).to.be.revertedWithCustomError(token, "MaxSupplyExceeded")
-          .withArgs(1, 0); // requested: 1, available: 0
-      });
+    it("Should not allow minting beyond max supply", async function () {
+      const maxSupply = await token.MAX_SUPPLY();
+      await token.connect(minter).mint(user1.address, maxSupply);
+      
+      // Try to mint 1 more token
+      await expect(
+        token.connect(minter).mint(user1.address, 1)
+      ).to.be.revertedWithCustomError(token, "MaxSupplyExceeded")
+        .withArgs(1, 0); // requested: 1, available: 0
+    });
 
-      it("Should not allow minting that would exceed max supply", async function () {
-        const maxSupply = await token.MAX_SUPPLY();
-        const halfSupply = maxSupply / 2n;
-        
-        // Mint half the supply
-        await token.connect(minter).mint(user1.address, halfSupply);
-        
-        // Try to mint more than the remaining supply
-        await expect(
-          token.connect(minter).mint(user1.address, halfSupply + 1n)
-        ).to.be.revertedWithCustomError(token, "MaxSupplyExceeded");
-      });
-
-  
+    it("Should not allow minting that would exceed max supply", async function () {
+      const maxSupply = await token.MAX_SUPPLY();
+      const halfSupply = maxSupply / 2n;
+      
+      // Mint half the supply
+      await token.connect(minter).mint(user1.address, halfSupply);
+      
+      // Try to mint more than the remaining supply
+      await expect(
+        token.connect(minter).mint(user1.address, halfSupply + 1n)
+      ).to.be.revertedWithCustomError(token, "MaxSupplyExceeded");
+    });
   });
 
   describe("Pausing", function () {
@@ -153,5 +156,4 @@ describe("XXXToken", function () {
       ).to.be.revertedWithCustomError(token, "ERC20InsufficientBalance");
     });
   });
-
 }); 

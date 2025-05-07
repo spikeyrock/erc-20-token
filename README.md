@@ -17,6 +17,7 @@ ttn-token/
 ├── scripts/           # Deployment and upgrade scripts
 ├── deployments/       # Deployment artifacts
 ├── .env.example       # Example environment configuration
+├── test               # Test files
 ├── hardhat.config.ts  # Hardhat configuration
 └── README.md          # Project documentation
 ```
@@ -36,9 +37,9 @@ The XXX token system implements the following features:
 
 - **Flexible Vesting and Locking**: Custom unlock patterns including cliff periods, linear releases, and milestone-based unlocks
 
-- **Airdrop Functionality**: Batch-allocate tokens to multiple addresses for airdrops
+- **Airdrop Functionality**: Batch-allocate tokens to multiple addresses for airdrops.
 
-- **Manual Unlocking**: Perform early unlocks when needed (e.g., exchange listings)
+- **Manual Unlocking**: Perform early unlocks when needed (e.g., exchange listings).
 
 - **Allocation Revocation**: Revoke part or all of locked allocations when needed
 
