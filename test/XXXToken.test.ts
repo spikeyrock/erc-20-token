@@ -5,7 +5,7 @@ import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
 import { Contract } from "ethers";
 
 // Import the contract type
-import { XXXToken } from "../typechain-types";
+import { XXXToken, XXXTokenV2 } from "../typechain-types";
 
 describe("XXXToken", function () {
   // Test roles
@@ -157,19 +157,29 @@ describe("XXXToken", function () {
     });
   });
 
-  // describe("Upgrading", function () {
-  //   it("Should allow upgrader to upgrade the contract", async function () {
-  //     const XXXTokenV2 = await ethers.getContractFactory("XXXTokenV2");
-  //     await expect(
-  //       token.connect(upgrader).upgradeTo(await XXXTokenV2.getAddress())
-  //     ).to.not.be.reverted;
-  //   });
+  describe("Upgrading", function () {
+    it("Should allow upgrader to upgrade the contract", async function () {
+      const XXXTokenV2Factory = await ethers.getContractFactory("XXXTokenV2");
+      const upgraded = await upgrades.upgradeProxy(await token.getAddress(), XXXTokenV2Factory) as unknown as XXXTokenV2;
+      await upgraded.initializeV2();
+      expect(await upgraded.version()).to.equal(2);
+    });
 
-  //   it("Should not allow non-upgrader to upgrade the contract", async function () {
-  //     const XXXTokenV2 = await ethers.getContractFactory("XXXTokenV2");
-  //     await expect(
-  //       token.connect(user1).upgradeTo(await XXXTokenV2.getAddress())
-  //     ).to.be.revertedWithCustomError(token, "AccessControlUnauthorizedAccount");
-  //   });
-  // });
+    it("Should not allow initializing V2 twice", async function () {
+      const XXXTokenV2Factory = await ethers.getContractFactory("XXXTokenV2");
+      const upgraded = await upgrades.upgradeProxy(await token.getAddress(), XXXTokenV2Factory) as unknown as XXXTokenV2;
+      await upgraded.initializeV2();
+      
+      await expect(
+        upgraded.initializeV2()
+      ).to.be.revertedWithCustomError(upgraded, "InvalidInitialization");
+    });
+
+    it("Should not allow non-upgrader to upgrade the contract", async function () {
+      const XXXTokenV2Factory = await ethers.getContractFactory("XXXTokenV2");
+      await expect(
+        upgrades.upgradeProxy(await token.getAddress(), XXXTokenV2Factory.connect(user1))
+      ).to.be.revertedWithCustomError(token, "AccessControlUnauthorizedAccount");
+    });
+  });
 }); 

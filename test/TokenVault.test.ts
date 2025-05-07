@@ -41,11 +41,13 @@ describe("TokenVault", function () {
     const ALLOCATOR_ROLE = ethers.keccak256(ethers.toUtf8Bytes("ALLOCATOR_ROLE"));
     const AIRDROP_ROLE = ethers.keccak256(ethers.toUtf8Bytes("AIRDROP_ROLE"));
     const UPGRADER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("UPGRADER_ROLE"));
+    const DEFAULT_ADMIN_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
 
     // Grant MINTER_ROLE to the vault contract
     await token.grantRole(MINTER_ROLE, await vault.getAddress());
 
     // Grant all other roles to the owner
+    await vault.grantRole(DEFAULT_ADMIN_ROLE, owner.address);
     await vault.grantRole(ALLOCATOR_ROLE, owner.address);
     await vault.grantRole(AIRDROP_ROLE, owner.address);
     await vault.grantRole(UPGRADER_ROLE, owner.address);
