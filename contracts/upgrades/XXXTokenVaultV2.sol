@@ -10,18 +10,34 @@
 pragma solidity ^0.8.24;
 
 import "../XXXTokenVault.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 contract XXXTokenVaultV2 is TokenVault {
     // Version tracking for upgrade testing
     uint256 public version;
     // Additional counter for V2 allocations
     uint256 public totalAllocatedV2;
+
+
+    
     
     /**
      * @dev Initializes V2 functionality
      * This is called during the upgrade process
+     * @custom:oz-upgrades-validate-as-initializer
      */
-    function initializeV2() public reinitializer(2) {
+    function initializeV2() external reinitializer(2) {
+        // Initialize parent contracts
+        __ReentrancyGuard_init();
+        __AccessControl_init();
+        __Pausable_init();
+        __UUPSUpgradeable_init();
+
+        
+        
         version = 2;
     }
     

@@ -112,7 +112,7 @@ contract VestingManager is Initializable,
      * @param _ttnToken Address of the XXXToken contract
      * @param _tokenVault Address of the TokenVault contract
      */
-    function initialize(address _ttnToken, address _tokenVault) public initializer {
+    function initialize(address _ttnToken, address _tokenVault) external initializer {
        if (_ttnToken == address(0)) revert ZeroAddress("token");
        if (_tokenVault == address(0)) revert ZeroAddress("vault");
         __AccessControl_init();

@@ -53,7 +53,7 @@ contract XXXToken is Initializable,
      * @dev Initializes the contract replacing the constructor for upgradeable contracts
      * Sets up roles and configures token parameters
      */
-    function initialize() public initializer {
+    function initialize() external initializer {
         // Initialize ERC20 with name and symbol
         __ERC20_init("XXX", "XXX");
         

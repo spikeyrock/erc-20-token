@@ -79,7 +79,7 @@ contract TokenVault is Initializable,
      * @dev Initializes the contract replacing the constructor for upgradeable contracts
      * @param _ttnToken Address of the XXXToken contract
      */
-    function initialize(address _ttnToken) public initializer {
+    function initialize(address _ttnToken) external initializer {
          if (_ttnToken == address(0)) revert ZeroAddress("token");
         __AccessControl_init();
         __UUPSUpgradeable_init();
