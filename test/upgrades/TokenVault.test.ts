@@ -7,7 +7,6 @@ import { TokenVault, XXXTokenVaultV2, XXXToken } from "../../typechain-types";
 describe("TokenVault Upgrades", function () {
   // Role identifiers
   const UPGRADER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("UPGRADER_ROLE"));
-  const DEFAULT_ADMIN_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
 
   // Test accounts
   let owner: SignerWithAddress;

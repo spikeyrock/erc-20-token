@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { ethers, upgrades } from "hardhat";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
-import { VestingManager, XXXVestingManagerV2, XXXToken, TokenVault } from "../../typechain-types";
+import { VestingManager} from "../../typechain-types";
 
 
 describe("VestingManager Upgrades", function () {
@@ -17,9 +17,7 @@ describe("VestingManager Upgrades", function () {
   let beneficiary: SignerWithAddress;
   let user: SignerWithAddress;
 
-  // Contract instances
-  let token: XXXToken;
-  let vault: TokenVault;
+ 
   let vestingManager: VestingManager;
 
   async function deployFixture() {
@@ -49,11 +47,11 @@ describe("VestingManager Upgrades", function () {
     await vestingManager.grantRole(UPGRADER_ROLE, upgrader.address);
     await vestingManager.grantRole(VESTING_ADMIN_ROLE, vestingAdmin.address);
 
-    return { token, vault, vestingManager, owner, upgrader, vestingAdmin, beneficiary, user };
+    return {vestingManager, owner, upgrader, vestingAdmin, beneficiary, user };
   }
 
   beforeEach(async function () {
-    ({ token, vault, vestingManager, owner, upgrader, vestingAdmin, beneficiary, user } = 
+    ({ vestingManager, owner, upgrader, vestingAdmin, beneficiary, user } = 
       await loadFixture(deployFixture));
   });
 

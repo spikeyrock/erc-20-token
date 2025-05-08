@@ -8,8 +8,8 @@ describe("VestingManager", function () {
   // Role identifiers
   const VESTING_ADMIN_ROLE = ethers.keccak256(ethers.toUtf8Bytes("VESTING_ADMIN_ROLE"));
   const MANUAL_UNLOCK_ROLE = ethers.keccak256(ethers.toUtf8Bytes("MANUAL_UNLOCK_ROLE"));
-  const UPGRADER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("UPGRADER_ROLE"));
 
+  
   // Test accounts
   let owner: SignerWithAddress;
   let vestingAdmin: SignerWithAddress;
