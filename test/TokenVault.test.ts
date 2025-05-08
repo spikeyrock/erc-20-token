@@ -76,7 +76,7 @@ describe("TokenVault", function () {
     });
   });
 
-  describe("Vesting Manager", function () {
+  describe("Set Vesting Manager", function () {
     it("Should allow admin to set vesting manager", async function () {
       await vault.setVestingManager(vestingManager.address);
       expect(await vault.vestingManager()).to.equal(vestingManager.address);

@@ -170,6 +170,45 @@ describe("VestingManager", function () {
         vestingManager.connect(user).release(scheduleId)
       ).to.be.revertedWithCustomError(vestingManager, "NotBeneficiary");
     });
+
+    it("Should not allow burning locked tokens", async function () {
+      // First mint tokens to the vesting manager
+      await token.mint(await vestingManager.getAddress(), amount);
+      
+      // Verify beneficiary has no tokens yet (they are still locked)
+      expect(await token.balanceOf(beneficiary.address)).to.equal(0);
+
+      // Try to burn tokens before they are unlocked
+      await expect(
+        token.connect(beneficiary).burn(ethers.parseEther("100"))
+      ).to.be.revertedWithCustomError(token, "ERC20InsufficientBalance");
+
+      // Verify beneficiary still has no tokens
+      expect(await token.balanceOf(beneficiary.address)).to.equal(0);
+    });
+
+    it("Should only allow burning unlocked tokens", async function () {
+      // First mint tokens to the vesting manager
+      await token.mint(await vestingManager.getAddress(), amount);
+
+      // Manually unlock some tokens
+      const unlockAmount = ethers.parseEther("100");
+      await vestingManager.connect(owner).manualUnlock(scheduleId, unlockAmount);
+      
+      // Verify beneficiary received the unlocked tokens
+      expect(await token.balanceOf(beneficiary.address)).to.equal(unlockAmount);
+
+      // Should be able to burn unlocked tokens
+      const burnAmount = ethers.parseEther("50");
+      await token.connect(beneficiary).burn(burnAmount);
+      expect(await token.balanceOf(beneficiary.address)).to.equal(unlockAmount - burnAmount);
+
+      // Try to burn more than unlocked amount
+      const remainingLocked = amount - unlockAmount;
+      await expect(
+        token.connect(beneficiary).burn(remainingLocked)
+      ).to.be.revertedWithCustomError(token, "ERC20InsufficientBalance");
+    });
   });
 
   describe("Manual Unlock", function () {

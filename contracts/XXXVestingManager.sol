@@ -200,7 +200,7 @@ contract VestingManager is Initializable,
      * @param scheduleId ID of the vesting schedule
      * @return The amount of tokens that can be released
      */
-    function computeReleasableAmount(uint256 scheduleId) public view returns (uint256) {
+    function computeReleasableAmount(uint256 scheduleId) internal view returns (uint256) {
         if (scheduleId == 0 || scheduleId > _vestingScheduleCounter) revert InvalidScheduleId();
         
         VestingSchedule storage schedule = vestingSchedules[scheduleId];
