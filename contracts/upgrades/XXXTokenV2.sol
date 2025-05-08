@@ -24,12 +24,22 @@ contract XXXTokenV2 is XXXToken {
     /// @notice The version number of this contract implementation
     uint256 public version;
 
+    
+
     /**
-     * @dev Initializes the V2 contract with a version number.
-     * This function is called after the upgrade to set up the new state variables.
-     * The reinitializer modifier ensures this can only be called once after the upgrade.
+     * @dev Initializes V2 functionality
+     * This is called during the upgrade process
+     * @custom:oz-upgrades-validate-as-initializer
      */
-    function initializeV2() public reinitializer(2) {
+    function initializeV2() external reinitializer(2) {
+        // Initialize parent contracts
+        __ERC20_init("XXX Token", "XXX");
+        __ERC20Capped_init(1000000000 * 10**18); // 1 billion tokens
+        __Ownable_init(msg.sender);
+        __AccessControl_init();
+        __Pausable_init();
+        __UUPSUpgradeable_init();
+        
         version = 2;
     }
 } 

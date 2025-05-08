@@ -2,10 +2,10 @@ import { expect } from "chai";
 import { ethers, upgrades } from "hardhat";
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
-import { Contract } from "ethers";
+
 
 // Import the contract type
-import { XXXToken, XXXTokenV2 } from "../typechain-types";
+import { XXXToken } from "../typechain-types";
 
 describe("XXXToken", function () {
   // Test roles

@@ -112,7 +112,7 @@ contract VestingManager is Initializable,
      * @param _ttnToken Address of the XXXToken contract
      * @param _tokenVault Address of the TokenVault contract
      */
-    function initialize(address _ttnToken, address _tokenVault) public initializer {
+    function initialize(address _ttnToken, address _tokenVault) external initializer {
        if (_ttnToken == address(0)) revert ZeroAddress("token");
        if (_tokenVault == address(0)) revert ZeroAddress("vault");
         __AccessControl_init();
@@ -200,7 +200,7 @@ contract VestingManager is Initializable,
      * @param scheduleId ID of the vesting schedule
      * @return The amount of tokens that can be released
      */
-    function computeReleasableAmount(uint256 scheduleId) public view returns (uint256) {
+    function computeReleasableAmount(uint256 scheduleId) internal view returns (uint256) {
         if (scheduleId == 0 || scheduleId > _vestingScheduleCounter) revert InvalidScheduleId();
         
         VestingSchedule storage schedule = vestingSchedules[scheduleId];
