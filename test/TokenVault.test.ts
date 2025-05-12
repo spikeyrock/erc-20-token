@@ -76,7 +76,7 @@ describe("TokenVault", function () {
     });
   });
 
-  describe("Vesting Manager", function () {
+  describe("Set Vesting Manager", function () {
     it("Should allow admin to set vesting manager", async function () {
       await vault.setVestingManager(vestingManager.address);
       expect(await vault.vestingManager()).to.equal(vestingManager.address);
@@ -234,6 +234,47 @@ describe("TokenVault", function () {
       await expect(
         vault.connect(owner).executeAirdrop(beneficiaries, amounts)
       ).to.be.revertedWithCustomError(vault, "EnforcedPause");
+    });
+  });
+
+  describe("Token Minting", function () {
+    it("Should allow minting up to max supply", async function () {
+      const maxSupply = await token.MAX_SUPPLY();
+      const halfSupply = maxSupply / 2n;
+      
+      // Mint half the supply
+      await vault.connect(owner).createAllocation(beneficiary1.address, halfSupply);
+      await vault.connect(owner).createAllocation(beneficiary2.address, halfSupply);
+      
+      // Verify total supply
+      expect(await token.totalSupply()).to.equal(maxSupply);
+    });
+
+    it("Should not allow minting beyond max supply", async function () {
+      const maxSupply = await token.MAX_SUPPLY();
+      const halfSupply = maxSupply / 2n;
+      
+      // Mint half the supply
+      await vault.connect(owner).createAllocation(beneficiary1.address, halfSupply);
+      await vault.connect(owner).createAllocation(beneficiary2.address, halfSupply);
+      
+      // Try to mint one more token
+      await expect(
+        vault.connect(owner).createAllocation(beneficiary1.address, 1)
+      ).to.be.revertedWithCustomError(token, "MaxSupplyExceeded");
+    });
+
+    it("Should not allow minting that would exceed max supply", async function () {
+      const maxSupply = await token.MAX_SUPPLY();
+      const halfSupply = maxSupply / 2n;
+      
+      // Mint half the supply
+      await vault.connect(owner).createAllocation(beneficiary1.address, halfSupply);
+      
+      // Try to mint more than the remaining supply
+      await expect(
+        vault.connect(owner).createAllocation(beneficiary2.address, halfSupply + 1n)
+      ).to.be.revertedWithCustomError(token, "MaxSupplyExceeded");
     });
   });
 }); 
